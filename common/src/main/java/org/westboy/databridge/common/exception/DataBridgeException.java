@@ -35,8 +35,12 @@ public class DataBridgeException extends RuntimeException {
     public static DataBridgeException asDataBridgeException(DataBaseType type, Exception e, String user, String dbName) {
         switch (type) {
             case MYSQL:
+            case MYSQL8:
                 ErrorCode code = DBErrorCode.of(e.getMessage());
                 return DataBridgeException.asDataBridgeException(code, "该数据库名为：" + dbName + "，具体错误信息为：" + e);
+            case ORACLE:
+                return null;
+               
         }
         return null;
     }

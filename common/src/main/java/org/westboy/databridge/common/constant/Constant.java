@@ -8,4 +8,5 @@ package org.westboy.databridge.common.constant;
  */
 public class Constant {
     public static final int TIMEOUT_SECONDS = 15;
+    public static final int SOCKET_TIMEOUT_INSECOND = 15;
 }

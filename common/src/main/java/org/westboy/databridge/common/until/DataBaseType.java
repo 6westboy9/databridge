@@ -16,6 +16,7 @@ public enum DataBaseType {
      * 目前支持且使用到的数据库与驱动
      */
     MYSQL("mysql", "com.mysql.jdbc.Driver"),
+    MYSQL8("mysql8", "com.mysql.cj.jdbc.Driver"),
     ORACLE("oracle", "oracle.jdbc.OracleDriver"),
     SQL_SEVER("sqlserver", "com.microsoft.sqlserver.jdbc.SQLServerDriver"),
     ;
