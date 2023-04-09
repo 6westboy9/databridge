@@ -1,5 +1,6 @@
 package org.westboy.databridge.common.exception;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import org.westboy.databridge.common.ErrorCode;
 import org.westboy.databridge.common.until.DataBaseType;
@@ -27,9 +28,8 @@ public class DataBridgeException extends RuntimeException {
         return new DataBridgeException(errorCode, errorMessage);
     }
 
-    public static Exception asDataBridgeException(DBErrorCode errorCode, Object... args) {
-        String errorMessage = String.format(errorCode.getDescription(), args);
-        return new DataBridgeException(errorCode, errorMessage);
+    public static DataBridgeException asDataBridgeExceptionWithArgs(ErrorCode errorCode, Object... args) {
+        return new DataBridgeException(errorCode, StrUtil.format(errorCode.getDescription(), args));
     }
 
     public static DataBridgeException asDataBridgeException(DataBaseType type, Exception e, String user, String dbName) {

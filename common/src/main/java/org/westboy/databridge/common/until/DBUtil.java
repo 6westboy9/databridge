@@ -17,8 +17,8 @@ import java.util.Properties;
 public final class DBUtil {
 
     /**
-     * 获取数据库连接，默认带有重试机会
-     * 
+     * 获取数据库连接（带重试机制）
+     *
      * @param type     数据库类型
      * @param jdbcUrl  连接地址
      * @param user     用户名
@@ -30,12 +30,12 @@ public final class DBUtil {
     }
 
     /**
-     * 获取数据库连接，默认带有重试机会
-     * 
-     * @param type     数据库类型
-     * @param jdbcUrl  连接地址
-     * @param user     用户名
-     * @param password 密码
+     * 获取数据库连接（带重试机制）
+     *
+     * @param type          数据库类型
+     * @param jdbcUrl       连接地址
+     * @param user          用户名
+     * @param password      密码
      * @param socketTimeout 获取连接超时时间
      * @return 数据库连接
      */
@@ -50,10 +50,29 @@ public final class DBUtil {
         }
     }
 
+    /**
+     * 获取数据库连接（不带重试机制）
+     *
+     * @param type     数据库类型
+     * @param jdbcUrl  连接地址
+     * @param username 用户名
+     * @param password 密码
+     * @return 数据库连接
+     */
     public static Connection getConnectionWithoutRetry(DataBaseType type, String jdbcUrl, String username, String password) {
         return getConnectionWithoutRetry(type, jdbcUrl, username, password, String.valueOf(Constant.SOCKET_TIMEOUT_INSECOND * 1000));
     }
 
+    /**
+     * 获取数据库连接（不带重试机制）
+     *
+     * @param type          数据库类型
+     * @param jdbcUrl       连接地址
+     * @param username      用户名
+     * @param password      密码
+     * @param socketTimeout 获取连接超时时间
+     * @return 数据库连接
+     */
     public static Connection getConnectionWithoutRetry(DataBaseType type, String jdbcUrl, String username, String password, String socketTimeout) {
         return connect(type, jdbcUrl, username, password, socketTimeout);
     }

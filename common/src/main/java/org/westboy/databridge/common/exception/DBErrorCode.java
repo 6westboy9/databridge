@@ -25,14 +25,14 @@ public enum DBErrorCode implements ErrorCode {
     CONN_DB_ERROR("DBUtilErrorCode-10", "", "数据库连接失败，根据您配置的连接信息：%s获取数据库连接失败，请检查您的配置并作出修改");
 
     private final String code;
-    private final String innerCode;
+    private final String subCode;
     private final String description;
 
     private static final Map<String, DBErrorCode> MAP = new HashMap<>();
 
     static {
         for (DBErrorCode errorCode : DBErrorCode.values()) {
-            MAP.put(errorCode.getInnerCode(), errorCode);
+            MAP.put(errorCode.getSubCode(), errorCode);
         }
     }
 
