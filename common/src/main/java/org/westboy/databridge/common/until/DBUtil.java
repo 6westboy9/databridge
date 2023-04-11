@@ -60,7 +60,7 @@ public final class DBUtil {
      * @return 数据库连接
      */
     public static Connection getConnectionWithoutRetry(DataBaseType type, String jdbcUrl, String username, String password) {
-        return getConnectionWithoutRetry(type, jdbcUrl, username, password, String.valueOf(Constant.SOCKET_TIMEOUT_INSECOND * 1000));
+        return getConnectionWithoutRetry(type, jdbcUrl, username, password, String.valueOf(Constant.SOCKET_TIMEOUT_SECONDS * 1000));
     }
 
     /**
@@ -78,7 +78,7 @@ public final class DBUtil {
     }
 
     private static synchronized Connection connect(DataBaseType type, String url, String user, String pass) {
-        return connect(type, url, user, pass, String.valueOf(Constant.SOCKET_TIMEOUT_INSECOND * 1000));
+        return connect(type, url, user, pass, String.valueOf(Constant.SOCKET_TIMEOUT_SECONDS * 1000));
     }
 
     private static synchronized Connection connect(DataBaseType type, String url, String user, String password, String socketTimeout) {

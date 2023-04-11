@@ -1,4 +1,4 @@
-import org.westboy.databridge.common.config.Config;
+package org.westboy.databridge.common.plugin;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +17,6 @@ public enum PluginType {
     WRITER("writer"),
     HANDLER("handler");
 
-    private final String name;
+    private final String value;
 
 }

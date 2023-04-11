@@ -1,7 +1,7 @@
 package org.westboy.databridge.common.until;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public final class RetryUtil {
         public <T> T doRetry(Callable<T> callable, int retryTimes, long sleepTimeInMilliSecond,
                              boolean exponential, List<Class<?>> retryExceptionClasses) throws Exception {
 
-            if (ObjUtil.isNull(callable)) {
+            if (ObjectUtil.isNull(callable)) {
                 throw new IllegalArgumentException("系统编程错误，入参callable不能为空！");
             }
 

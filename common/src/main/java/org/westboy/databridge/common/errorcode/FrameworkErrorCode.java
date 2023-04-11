@@ -15,10 +15,11 @@ import org.westboy.databridge.common.ErrorCode;
 public enum FrameworkErrorCode implements ErrorCode {
 
     ARGUMENT_ERROR("Framework-01", ""),
-    RUNTIME_ERROR("Framework-02", "DataBridge运行过程出错"),
+    RUNTIME_ERROR("Framework-02", "DataBridge运行过程出错:{}"),
+    CONFIG_ERROR("Framework-03", "DataBridge配置错误:{}"),
 
-    PLUGIN_LOAD_ERROR("Framework-10", "DataBridge插件加载错误")
-    ;
+    PLUGIN_LOAD_ERROR("Framework-10", "DataBridge插件加载错误:{}");
+
 
     private final String code;
     private final String description;
