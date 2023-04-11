@@ -8,11 +8,10 @@ package org.westboy.databridge.common.plugin;
  */
 public interface Plugin {
 
-    String getDeveloper();
-
-    String getDescription();
-
-    void setPluginConfig();
+    /**
+     * 此处设置的是插件的配置
+     */
+    void setConfig();
 
     void init();
 

@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
  * @since 2023/4/2 12:39
  */
 @Slf4j
-public class RetryUtil {
+public final class RetryUtil {
 
     private static final long MAX_SLEEP_MILLISECOND = 256 * 1000;
 
@@ -69,9 +69,8 @@ public class RetryUtil {
                 } catch (Exception e) {
                     exception = e;
                     if (i == 0) {
-                        log.error(String.format("调用方法异常Msg：%s", exception.getMessage()), exception);
+                        log.error("调用方法异常Msg", exception);
                     }
-
                     if (CollUtil.isNotEmpty(retryExceptionClasses)) {
                         boolean needRetry = false;
                         for (Class<?> eachExceptionClass : retryExceptionClasses) {
