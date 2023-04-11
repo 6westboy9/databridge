@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 
 
@@ -26,14 +28,13 @@ class RetryUtilTest {
     void executeWithRetry() {
         try {
             ArrayList<Class<?>> exceptions = new ArrayList<>();
-            // exceptions.add(IllegalArgumentException.class);
             String result = RetryUtil.executeWithRetry(() -> {
                 System.out.println(1 / 0);
                 return "hello";
             }, 9, 1000L, false, exceptions);
             log.info("结果：{}", result);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            assertEquals("/ by zero", e.getMessage());
         }
     }
 }
