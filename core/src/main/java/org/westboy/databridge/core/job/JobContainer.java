@@ -95,7 +95,8 @@ public class JobContainer extends AbstractContainer {
         // TODO 可是此时并没有设置ContainerCommunicator组件，获取到的一定为null
         DefaultJobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
         preHandler.setJobPluginCollector(jobPluginCollector);
-        preHandler.preHandle();
+        // 总觉得不合适，仔细想想
+        // preHandler.preHandle();
     }
 
     private void init() {
