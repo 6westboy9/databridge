@@ -1,4 +1,4 @@
-package org.westboy.databridge.common.exception;
+package org.westboy.databridge.common.errorcode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,7 +2,8 @@ package org.westboy.databridge.common.config;
 
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
-import org.westboy.databridge.common.exception.CommonErrorCode;
+
+import org.westboy.databridge.common.errorcode.CommonErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
 
 /**
@@ -25,5 +26,9 @@ public abstract class Config {
 
     public <T> T get(String expression, T defaultValue) {
         return JSONUtil.getByPath(root, expression, defaultValue);
+    }
+
+    public <T> T get(String expression, Class<T> clazz) {
+        return clazz.cast(JSONUtil.getByPath(root, expression));
     }
 }

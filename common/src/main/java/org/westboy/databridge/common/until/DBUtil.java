@@ -1,7 +1,7 @@
 package org.westboy.databridge.common.until;
 
 import org.westboy.databridge.common.constant.Constant;
-import org.westboy.databridge.common.exception.DBErrorCode;
+import org.westboy.databridge.common.errorcode.DatabaseErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
 
 import java.sql.Connection;
@@ -46,7 +46,7 @@ public final class DBUtil {
                     1000L,
                     true);
         } catch (Exception e) {
-            throw DataBridgeException.asDataBridgeException(DBErrorCode.CONN_DB_ERROR, jdbcUrl);
+            throw DataBridgeException.asDataBridgeException(DatabaseErrorCode.CONN_DB_ERROR, jdbcUrl);
         }
     }
 
@@ -95,7 +95,8 @@ public final class DBUtil {
             DriverManager.setLoginTimeout(Constant.TIMEOUT_SECONDS);
             return DriverManager.getConnection(url, properties);
         } catch (Exception e) {
-            throw DataBridgeException.asDataBridgeException(type, e, properties.getProperty("user"), null);
+            String user = properties.getProperty("user");
+            throw DataBridgeException.asDataBridgeException(type, e, user, null);
         }
     }
 

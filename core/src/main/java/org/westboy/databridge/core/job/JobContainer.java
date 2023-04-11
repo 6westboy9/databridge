@@ -24,30 +24,75 @@ public class JobContainer extends AbstractJobContainer {
             boolean dryRun = jobConfig.getDryRun();
             if (dryRun) {
                 log.info("Job任务执行[preCheck]");
-                // preCheck();
+                this.preCheck();
             } else {
                 log.info("Job任务执行[preHandle]");
-                // preHandle();
+                // 加载PreHandler并执行（插件式）
+                this.preHandle();
                 log.info("Job任务执行[init]");
-                // init();
+                // Job#init -- 生成Reader.Job和Writer.Job对象（插件式）
+                this.init();
                 log.info("Job任务执行[prepare]");
-                // prepare();
+                // Job#prepare
+                this.prepare();
                 log.info("Job任务执行[split]");
-                // split();
+                // Job#split
+                this.split();
                 log.info("Job任务执行[schedule]");
-                // schedule();
+                // 任务调度核心流程
+                // 1.将Job切分成多个小的Task（子任务），以便于并发执行，Task便是DataBridge作业的最小单元，每一个Task都会负责一部分数据的同步工作
+                // 2.切分多个Task之后，会根据配置的并发数量将拆分成的Task重新组合，组装成TaskGroup（任务组），每个TaskGroup负责以一定的并发运行完成分配好的Task，默认单个任务组的并发数量是5
+                // 3.每一个Task由TaskGroup负责启动，Task启动后，会固定启动Reader->Channel->Writer的线程来完成任务同步工作
+                // 4.Job需要监控等待多个TaskGroup任务执行完成后Job退出成功，否则异常退出
+                this.schedule();
                 log.info("Job任务执行[post]");
-                // post();
+                // Job#post
+                this.post();
                 log.info("Job任务执行[postHandle]");
-                // postHandle();
+                // 加载PostHandler并执行（插件式）
+                this.postHandle();
                 log.info("Job任务执行[invokeHooks]");
-                // invokeHooks();
+                this.invokeHooks();
             }
         } catch (Throwable throwable) {
             log.error("Job任务执行异常", throwable);
             hasException = true;
         } finally {
-
+            // TODO
         }
     }
+
+    private void preCheck() {
+    }
+
+    /**
+     * 加载PreHandler并执行（插件式）
+     */
+    private void preHandle() {
+    }
+
+    private void init() {
+    }
+
+    private void prepare() {
+    }
+
+    private void split() {
+    }
+
+    private void schedule() {
+    }
+
+    private void post() {
+    }
+
+    /**
+     * 加载PostHandler并执行（插件式）
+     */
+    private void postHandle() {
+    }
+
+    private void invokeHooks() {
+    }
+
 }
