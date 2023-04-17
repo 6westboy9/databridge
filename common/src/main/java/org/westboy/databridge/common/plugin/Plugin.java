@@ -13,7 +13,7 @@ public interface Plugin {
     /**
      * 此处设置的是插件的配置
      */
-    void setConfig(Config config);
+    void setPluginConfig(Config pluginConfig);
 
     void init();
 

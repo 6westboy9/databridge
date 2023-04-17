@@ -102,7 +102,7 @@ public final class PluginLoader {
         Class<? extends AbstractPlugin> pluginClass = loadPluginClass(pluginType, pluginName, ContainerType.JOB);
         try {
             AbstractJobPlugin plugin = (AbstractJobPlugin) pluginClass.newInstance();
-            plugin.setConfig(getPluginConfig(pluginType, pluginName));
+            plugin.setPluginConfig(getPluginConfig(pluginType, pluginName));
             return plugin;
         } catch (Exception e) {
             String description = StrUtil.format("DataBridge未能找到[{}]的插件[{}]", pluginType, pluginName);
@@ -121,7 +121,7 @@ public final class PluginLoader {
         Class<? extends AbstractPlugin> pluginClass = loadPluginClass(pluginType, pluginName, ContainerType.TASK);
         try {
             AbstractTaskPlugin plugin = (AbstractTaskPlugin) pluginClass.newInstance();
-            plugin.setConfig(getPluginConfig(pluginType, pluginName));
+            plugin.setPluginConfig(getPluginConfig(pluginType, pluginName));
             return plugin;
         } catch (Exception e) {
             String description = StrUtil.format("DataBridge未能找到[{}]的插件[{}]", pluginType, pluginName);

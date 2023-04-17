@@ -7,5 +7,5 @@ package org.westboy.databridge.core.constant;
  * @since 2023/4/11 22:07
  */
 public class CoreConstant {
-
+    public static final String CORE_CONTAINER_JOB_ID = "core.container.job.id";
 }

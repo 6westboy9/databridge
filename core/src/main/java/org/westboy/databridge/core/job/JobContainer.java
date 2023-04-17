@@ -2,12 +2,18 @@ package org.westboy.databridge.core.job;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.westboy.databridge.common.config.Config;
 import org.westboy.databridge.common.errorcode.FrameworkErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
 import org.westboy.databridge.common.plugin.AbstractJobPlugin;
+import org.westboy.databridge.common.plugin.JobPluginCollector;
 import org.westboy.databridge.common.plugin.PluginLoader;
 import org.westboy.databridge.common.plugin.PluginType;
+import org.westboy.databridge.common.spi.Reader;
+import org.westboy.databridge.common.spi.Writer;
+import org.westboy.databridge.common.spi.Writer.Job;
+import org.westboy.databridge.core.constant.CoreConstant;
 import org.westboy.databridge.core.constant.JobConstant;
 import org.westboy.databridge.core.statistics.DefaultJobPluginCollector;
 
@@ -24,6 +30,8 @@ public class JobContainer extends AbstractContainer {
     private String readPluginName;
     private String writePluginName;
     private Config jobConfig;
+    private Reader.Job jobReader;
+    private Writer.Job jobWriter;
 
     public JobContainer(Config allConfig) {
         super(allConfig);
@@ -75,32 +83,48 @@ public class JobContainer extends AbstractContainer {
      * 加载PreHandler并执行（插件式）
      */
     private void preHandle() {
-        String pluginTypeStr = allConfig.getValue(JobConstant.JOB_PRE_HANDLER_PLUGIN_TYPE, String.class);
-        if (StrUtil.isEmpty(pluginTypeStr)) {
-            return;
-        }
+        // String pluginTypeStr = allConfig.getValue(JobConstant.JOB_PRE_HANDLER_PLUGIN_TYPE, String.class);
+        // if (StrUtil.isEmpty(pluginTypeStr)) {
+        //     return;
+        // }
 
-        PluginType preHandlerPluginType;
-        try {
-            preHandlerPluginType = PluginType.valueOf(pluginTypeStr.toUpperCase());
-        } catch (Exception e) {
-            String description = "Job的PreHandler插件类型设置错误原因:" + e.getMessage();
-            throw DataBridgeException.asDataBridgeException(FrameworkErrorCode.CONFIG_ERROR, description);
-        }
+        // PluginType preHandlerPluginType;
+        // try {
+        //     preHandlerPluginType = PluginType.valueOf(pluginTypeStr.toUpperCase());
+        // } catch (Exception e) {
+        //     String description = "Job的PreHandler插件类型设置错误原因:" + e.getMessage();
+        //     throw DataBridgeException.asDataBridgeException(FrameworkErrorCode.CONFIG_ERROR, description);
+        // }
 
-        String preHandlerPluginName = allConfig.getValue(JobConstant.JOB_PRE_HANDLER_PLUGIN_NAME, String.class);
-        PluginLoader pluginLoader = PluginLoader.getInstance();
+        // String preHandlerPluginName = allConfig.getValue(JobConstant.JOB_PRE_HANDLER_PLUGIN_NAME, String.class);
+        // PluginLoader pluginLoader = PluginLoader.getInstance();
         // 将所有Reader、Writer、Handler都认为是Job容器插件
-        AbstractJobPlugin preHandler = pluginLoader.loadJobPlugin(preHandlerPluginType, preHandlerPluginName);
+        // AbstractJobPlugin preHandler = pluginLoader.loadJobPlugin(preHandlerPluginType, preHandlerPluginName);
         // TODO 可是此时并没有设置ContainerCommunicator组件，获取到的一定为null
-        DefaultJobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
-        preHandler.setJobPluginCollector(jobPluginCollector);
+        // DefaultJobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
+        // preHandler.setJobPluginCollector(jobPluginCollector);
         // 总觉得不合适，仔细想想
         // preHandler.preHandle();
     }
 
     private void init() {
+        this.jobId = allConfig.getValue(CoreConstant.CORE_CONTAINER_JOB_ID, Long.class);
+        JobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
+        this.jobReader = initJobReader(jobPluginCollector);
+        this.jobWriter = initJobWriter(jobPluginCollector);
+    }
 
+    private Reader.Job initJobReader(JobPluginCollector jobPluginCollector) {
+        this.readPluginName = allConfig.getValue("", null);
+        Reader.Job jobReader = (Reader.Job) PluginLoader.getInstance().loadJobPlugin(PluginType.READER, this.readPluginName);
+        
+        jobReader.setJobPluginCollector(jobPluginCollector);
+        jobReader.init();
+        return jobReader;
+    }
+
+    private Writer.Job initJobWriter(JobPluginCollector jobPluginCollector) {
+        return null;
     }
 
     private void prepare() {
