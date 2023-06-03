@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.hutool.core.util.ObjectUtil;
+import org.westboy.databridge.common.config.AllConfig;
 import org.westboy.databridge.common.config.Config;
+import org.westboy.databridge.common.config.plugin.MultiPluginConfig;
+import org.westboy.databridge.common.config.plugin.PluginConfig;
 import org.westboy.databridge.common.errorcode.FrameworkErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
 
@@ -25,10 +28,10 @@ public final class PluginLoader {
     private static final String PLUGIN_TYPE_NAME_FORMAT = "plugin.{}.{}";
     private static PluginLoader INSTANCE;
     private final Map<String, JarLoader> jarLoaderHashMap = new HashMap<>();
-    private final Config allConfig;
-    private final Map<String, Config> pluginConfigs = new HashMap<>();
+    private final AllConfig allConfig;
+    private final Map<String, PluginConfig> pluginConfigs = new HashMap<>();
 
-    private PluginLoader(Config allConfig) {
+    private PluginLoader(AllConfig allConfig) {
         this.allConfig = allConfig;
     }
 
@@ -38,7 +41,7 @@ public final class PluginLoader {
      * @param allConfig 全局配置
      * @return 单例插件组件
      */
-    public static void init(Config allConfig) {
+    public static void init(AllConfig allConfig) {
         if (ObjectUtil.isNull(INSTANCE)) {
             synchronized (PluginLoader.class) {
                 if (ObjectUtil.isNull(INSTANCE)) {
@@ -79,8 +82,8 @@ public final class PluginLoader {
         String pluginKey = generatePluginKey(pluginType, pluginName);
         JarLoader jarLoader = jarLoaderHashMap.get(pluginKey);
         if (ObjectUtil.isNull(jarLoader)) {
-            Config pluginConfig = getPluginConfig(pluginType, pluginName);
-            String pluginPath = pluginConfig.getValue("path", String.class);
+            PluginConfig pluginConfig = getPluginConfig(pluginType, pluginName);
+            String pluginPath = pluginConfig.getPath();
             if (StrUtil.isBlank(pluginPath)) {
                 String description = StrUtil.format("[{}]插件路径[{}]非法", pluginType, pluginName);
                 throw DataBridgeException.asDataBridgeException(FrameworkErrorCode.PLUGIN_LOAD_ERROR, description);
@@ -101,7 +104,7 @@ public final class PluginLoader {
     public synchronized AbstractJobPlugin loadJobPlugin(PluginType pluginType, String pluginName) {
         Class<? extends AbstractPlugin> pluginClass = loadPluginClass(pluginType, pluginName, ContainerType.JOB);
         try {
-            AbstractJobPlugin plugin = (AbstractJobPlugin) pluginClass.newInstance();
+            AbstractJobPlugin plugin = (AbstractJobPlugin) pluginClass.getDeclaredConstructor().newInstance();
             plugin.setPluginConfig(getPluginConfig(pluginType, pluginName));
             return plugin;
         } catch (Exception e) {
@@ -120,7 +123,7 @@ public final class PluginLoader {
     public synchronized AbstractTaskPlugin loadTaskPlugin(PluginType pluginType, String pluginName) {
         Class<? extends AbstractPlugin> pluginClass = loadPluginClass(pluginType, pluginName, ContainerType.TASK);
         try {
-            AbstractTaskPlugin plugin = (AbstractTaskPlugin) pluginClass.newInstance();
+            AbstractTaskPlugin plugin = (AbstractTaskPlugin) pluginClass.getDeclaredConstructor().newInstance();
             plugin.setPluginConfig(getPluginConfig(pluginType, pluginName));
             return plugin;
         } catch (Exception e) {
@@ -136,9 +139,10 @@ public final class PluginLoader {
      * @param pluginName 插件名称
      * @return 插件配置
      */
-    private synchronized Config getPluginConfig(PluginType pluginType, String pluginName) {
+    private synchronized PluginConfig getPluginConfig(PluginType pluginType, String pluginName) {
         String pluginKey = generatePluginKey(pluginType, pluginName);
-        return pluginConfigs.computeIfAbsent(pluginKey, key -> allConfig.getConfig(key));
+        MultiPluginConfig plugin = allConfig.getPlugin();
+        return pluginConfigs.computeIfAbsent(pluginKey, key -> plugin.getBy(pluginKey));
     }
 
     /**
@@ -162,10 +166,10 @@ public final class PluginLoader {
      */
     @SuppressWarnings("unchecked")
     private synchronized Class<? extends AbstractPlugin> loadPluginClass(PluginType pluginType, String pluginName, ContainerType containerType) {
-        Config pluginConfig = getPluginConfig(pluginType, pluginName);
+        PluginConfig pluginConfig = getPluginConfig(pluginType, pluginName);
         JarLoader jarLoader = getJarLoader(pluginType, pluginName);
         try {
-            String className = pluginConfig.getValue("class", String.class) + "$" + containerType.getValue();
+            String className = pluginConfig.getClassName();
             return (Class<? extends AbstractPlugin>) jarLoader.loadClass(className);
         } catch (Exception e) {
             throw DataBridgeException.asDataBridgeException(FrameworkErrorCode.RUNTIME_ERROR, e);

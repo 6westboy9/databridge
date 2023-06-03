@@ -1,6 +1,8 @@
 package org.westboy.databridge.common.plugin;
 
-import org.westboy.databridge.common.config.Config;
+import org.westboy.databridge.common.config.plugin.MultiPluginConfig;
+import org.westboy.databridge.common.config.plugin.PluginConfig;
+
 
 /**
  * 插件抽象类实现
@@ -10,10 +12,10 @@ import org.westboy.databridge.common.config.Config;
  */
 public abstract class AbstractPlugin implements Plugin {
 
-    private Config pluginConfig;
+    private PluginConfig pluginConfig;
 
     @Override
-    public void setPluginConfig(Config pluginConfig) {
+    public void setPluginConfig(PluginConfig pluginConfig) {
         this.pluginConfig = pluginConfig;
     }
 

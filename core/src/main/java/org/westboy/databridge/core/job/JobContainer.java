@@ -2,7 +2,7 @@ package org.westboy.databridge.core.job;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-
+import org.westboy.databridge.common.config.AllConfig;
 import org.westboy.databridge.common.config.Config;
 import org.westboy.databridge.common.errorcode.FrameworkErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
@@ -12,7 +12,6 @@ import org.westboy.databridge.common.plugin.PluginLoader;
 import org.westboy.databridge.common.plugin.PluginType;
 import org.westboy.databridge.common.spi.Reader;
 import org.westboy.databridge.common.spi.Writer;
-import org.westboy.databridge.common.spi.Writer.Job;
 import org.westboy.databridge.core.constant.CoreConstant;
 import org.westboy.databridge.core.constant.JobConstant;
 import org.westboy.databridge.core.statistics.DefaultJobPluginCollector;
@@ -33,7 +32,7 @@ public class JobContainer extends AbstractContainer {
     private Reader.Job jobReader;
     private Writer.Job jobWriter;
 
-    public JobContainer(Config allConfig) {
+    public JobContainer(AllConfig allConfig) {
         super(allConfig);
     }
 
@@ -43,10 +42,10 @@ public class JobContainer extends AbstractContainer {
         boolean hasException = false;
         boolean isRryRun = false;
         try {
-            isRryRun = jobConfig.getValue(JobConstant.JOB_SETTING_DRY_RUN, Boolean.class);
+            // isRryRun = jobConfig.getValue(JobConstant.JOB_SETTING_DRY_RUN, Boolean.class);
             if (isRryRun) {
-                log.info("preCheck");
-                preCheck();
+            //     log.info("preCheck");
+            //     preCheck();
             } else {
                 log.info("preHandle");
                 preHandle();
@@ -87,7 +86,7 @@ public class JobContainer extends AbstractContainer {
         // if (StrUtil.isEmpty(pluginTypeStr)) {
         //     return;
         // }
-
+        //
         // PluginType preHandlerPluginType;
         // try {
         //     preHandlerPluginType = PluginType.valueOf(pluginTypeStr.toUpperCase());
@@ -95,29 +94,29 @@ public class JobContainer extends AbstractContainer {
         //     String description = "Job的PreHandler插件类型设置错误原因:" + e.getMessage();
         //     throw DataBridgeException.asDataBridgeException(FrameworkErrorCode.CONFIG_ERROR, description);
         // }
-
+        //
         // String preHandlerPluginName = allConfig.getValue(JobConstant.JOB_PRE_HANDLER_PLUGIN_NAME, String.class);
         // PluginLoader pluginLoader = PluginLoader.getInstance();
-        // 将所有Reader、Writer、Handler都认为是Job容器插件
+        // // 将所有Reader、Writer、Handler都认为是Job容器插件
         // AbstractJobPlugin preHandler = pluginLoader.loadJobPlugin(preHandlerPluginType, preHandlerPluginName);
-        // TODO 可是此时并没有设置ContainerCommunicator组件，获取到的一定为null
+        // // TODO 可是此时并没有设置ContainerCommunicator组件，获取到的一定为null
         // DefaultJobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
         // preHandler.setJobPluginCollector(jobPluginCollector);
-        // 总觉得不合适，仔细想想
-        // preHandler.preHandle();
+        // // 总觉得不合适，仔细想想
+        // // preHandler.preHandle();
     }
 
     private void init() {
-        this.jobId = allConfig.getValue(CoreConstant.CORE_CONTAINER_JOB_ID, Long.class);
+        this.jobId = allConfig.getCore().getContainer().getJob().getJobId();
         JobPluginCollector jobPluginCollector = new DefaultJobPluginCollector(getContainerCommunicator());
         this.jobReader = initJobReader(jobPluginCollector);
         this.jobWriter = initJobWriter(jobPluginCollector);
     }
 
     private Reader.Job initJobReader(JobPluginCollector jobPluginCollector) {
-        this.readPluginName = allConfig.getValue("", null);
+        this.readPluginName = allConfig.getJob().getContent().getReader().getName();
         Reader.Job jobReader = (Reader.Job) PluginLoader.getInstance().loadJobPlugin(PluginType.READER, this.readPluginName);
-        
+
         jobReader.setJobPluginCollector(jobPluginCollector);
         jobReader.init();
         return jobReader;

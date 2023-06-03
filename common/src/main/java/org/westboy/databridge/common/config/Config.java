@@ -3,12 +3,11 @@ package org.westboy.databridge.common.config;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
-
 import org.westboy.databridge.common.errorcode.CommonErrorCode;
 import org.westboy.databridge.common.exception.DataBridgeException;
 
 /**
- * 配置抽象类
+ * 配置类
  *
  * @author mumu
  * @since 2023/4/8 18:21

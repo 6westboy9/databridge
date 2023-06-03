@@ -1,6 +1,6 @@
 package org.westboy.databridge.core.job;
 
-import org.westboy.databridge.common.config.Config;
+import org.westboy.databridge.common.config.AllConfig;
 import org.westboy.databridge.core.statistics.AbstractContainerCommunicator;
 
 /**
@@ -11,14 +11,14 @@ import org.westboy.databridge.core.statistics.AbstractContainerCommunicator;
  */
 public abstract class AbstractContainer {
 
-    protected final Config allConfig;
+    protected final AllConfig allConfig;
     private AbstractContainerCommunicator containerCommunicator;
 
-    public AbstractContainer(Config allConfig) {
+    public AbstractContainer(AllConfig allConfig) {
         this.allConfig = allConfig;
     }
 
-    public Config getAllConfig() {
+    public AllConfig getAllConfig() {
         return allConfig;
     }
 
